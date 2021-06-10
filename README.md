@@ -709,3 +709,54 @@ export default class About extends Mixins(GlobalMixin, xxxxxMixin) {}
 
 
 
+### 3-10、vue-router
+
+```js
+import Vue from 'vue'
+import VueRouter, { RouteConfig } from 'vue-router'
+import Home from '../views/Home.vue'
+
+Vue.use(VueRouter)
+
+const routes: Array<RouteConfig> = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/about/:id',
+    name: 'About',
+    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+  }
+]
+
+const router = new VueRouter({
+  routes
+})
+
+export default router
+```
+
+定义 vue-router 文件方式基本没有变化，有区别的一点是在定义路由配置文件 routes 的时候，可以指定类型，利用 ts 的类型提示：
+
+```js
+import VueRouter, { RouteConfig } from 'vue-router'
+
+const routes: Array<RouteConfig> = []
+```
+
+
+
+在使用的时候，基本也没有变化：
+
+```js
+// 获取路由参数
+this.$route
+
+// 编程式路由跳转
+this.$router.push('')
+```
+
+
+
