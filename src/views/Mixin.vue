@@ -8,11 +8,6 @@ import GlobalMixin from '../mixins/GlobalMixin'
 
 @Component
 export default class About extends Mixins(GlobalMixin) {
-  created() {
-    console.log(this.$route)
-    this.$router.push('')
-  }
-
   mounted() {
     console.log(this.message)
     this.changeMessage()

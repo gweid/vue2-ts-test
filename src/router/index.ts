@@ -11,9 +11,14 @@ const routes: Array<RouteConfig> = [
     component: Home
   },
   {
-    path: '/about/:id',
-    name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/mixin/',
+    name: 'Mixin',
+    component: () => import(/* webpackChunkName: "mixin" */ '../views/Mixin.vue')
+  },
+  {
+    path: '/router/:id',
+    name: 'Router',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Router.vue')
   }
 ]
 
