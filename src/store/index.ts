@@ -1,15 +1,12 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
+import Vuex, { StoreOptions } from 'vuex'
+import modules from './modules'
+import { IState } from './types'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
-})
+const store: StoreOptions<IState> = {
+  modules
+}
+
+export default new Vuex.Store<IState>(store)

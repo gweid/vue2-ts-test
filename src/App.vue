@@ -3,7 +3,8 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/mixin">Mixin</router-link> |
-      <router-link to="/router/2552">Router</router-link>
+      <router-link to="/router/2552">Router</router-link> |
+      <router-link to="/vuexPage">VuexPage</router-link>
     </div>
     <router-view/>
   </div>

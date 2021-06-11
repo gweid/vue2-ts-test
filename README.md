@@ -760,3 +760,213 @@ this.$router.push('')
 
 
 
+### 3-11、vuex
+
+#### 3-11-1、ts 中的 vuex 基本写法
+
+```
+store
+├── modules                     模块
+│   ├── VuexPage                VuexPage 模块
+│   │   ├── actions.ts          actions 相关
+│   │   ├── constant.ts         变量名
+│   │   ├── getters.ts          getter 相关
+│   │   ├── mutations.ts        mutations 相关
+│   │   ├── types.ts            类型声明
+│   ├── index.ts                导出所有模块
+├── index.ts                    Vuex 配置初始文件
+├── types.ts                    ts 类型声明文件
+```
+
+
+
+> store/index.ts
+
+```js
+import Vue from 'vue'
+import Vuex, { StoreOptions } from 'vuex'
+import modules from './modules'
+import { IState } from './types'
+
+Vue.use(Vuex)
+
+const store: StoreOptions<IState> = {
+  modules
+}
+
+export default new Vuex.Store<IState>(store)
+```
+
+Vuex 配置初始文件非常简单，通过 `import modules from './modules'` 将所有模块导进来，初始化 Vuex
+
+
+
+> store/modules/VuexPage/index.ts
+
+```js
+import mutations from './mutations'
+import actions from './actions'
+import getters from './getters'
+import { IStateInit } from './types'
+
+const stateInit: IStateInit = {
+  userInfo: {
+    name: '张三',
+    age: 18,
+    sex: 1,
+    token: 'xxxxxxaaaaaabbbbbbccccc',
+    hobby: []
+  }
+}
+
+export default {
+  namespaced: true,
+  state: stateInit,
+  getters,
+  mutations,
+  actions
+}
+```
+
+
+
+> store/modules/VuexPage/getters.ts
+
+```js
+import { IStateInit } from './types'
+import { IState } from '../../types'
+import { GetterTree } from 'vuex'
+
+// IStateInit 为当前 module 的 state 类型， IState 为根 state 类型
+const getter: GetterTree<IStateInit, IState> = {
+  getUserInfo(state: IStateInit) {
+    return state.userInfo
+  }
+}
+
+export default getter
+```
+
+
+
+> store/modules/VuexPage/actions.ts
+
+```js
+import { ActionTree } from 'vuex'
+import { IStateInit } from './types'
+import { IState } from '../../types'
+import { SET_USERINFO } from './constant'
+
+// IStateInit 为当前 module 的 state 类型， IState 为根 state 类型
+const actions: ActionTree<IStateInit, IState> = {
+  [SET_USERINFO]({ commit }, payload) {
+    commit(SET_USERINFO, payload)
+  }
+}
+
+export default actions
+```
+
+
+
+> store/modules/VuexPage/mutations.ts
+
+```js
+import { MutationTree } from 'vuex'
+import { IStateInit } from './types'
+import { SET_USERINFO } from './constant'
+
+const mutations: MutationTree<IStateInit> = {
+  [SET_USERINFO](state, payload) {
+    state.userInfo = payload
+  }
+}
+
+export default mutations
+```
+
+
+
+#### 3-11-2、配合 vuex-class 使用 vuex
+
+安转 `vuex-class`
+
+```js
+npm i vuex-class -S
+```
+
+
+
+使用：
+
+```js
+<template>
+  <div class="vuex-page">
+    <p>名字：{{ getUserInfo.name }}</p>
+    <button @click="changeUserInfo">修改Vuex</button>
+  </div>
+</template>
+
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+import { namespace, Getter, Action } from 'vuex-class'
+
+// vuex 的 VuexPage 模块，如果使用了多个模块，可以声明多个
+const VuexPage = namespace('VuexPage')
+
+@Component({})
+export default class  extends Vue {
+  // vuex 的 VuexPage 模块的 getter 的 getUserInfo
+  // 如果没有使用模块下面的，而是直接使用的 vuex 根下面的，直接 @Getter('xxx') 即可
+  @VuexPage.Getter('getUserInfo') getUserInfo!: Object
+  @VuexPage.Action('SET_USERINFO') setUserInfo!: Function
+
+  created() {
+    console.log(this.getUserInfo);
+  }
+
+  changeUserInfo() {
+    const newUserInfo = {
+    name: '李四',
+    age: 18,
+    sex: 1,
+    token: 'xxxxxxaaaaaabbbbbbccccc',
+    hobby: []
+  }
+    this.setUserInfo(newUserInfo)
+  }
+}
+</script>
+```
+
+如果是 vuex 各个模块下面的，使用 `const VuexPage = namespace('VuexPage')` 定义好模块。这有一个前提，就是各个模块必须开启
+
+命名空间 `namespaced: true`，如果使用了多个模块，那么：
+
+```js
+const VuexPage = namespace('VuexPage')
+const moduleX = namespace('moduleX')
+```
+
+
+
+使用的时候，如果是模块下面的：
+
+```js
+@VuexPage.Getter('getUserInfo') getUserInfo!: Object
+@VuexPage.Action('SET_USERINFO') setUserInfo!: Function
+
+console.log(this.getUserInfo)
+this.setUserInfo()
+```
+
+如果是 vuex 根下面的：
+
+```js
+@Getter('xxxxx') xxxxxx!: Object
+@Action('yyyyyy') yyyyyy!: Function
+
+console.log(this.xxxxx)
+this.yyyyyy()
+```
+
