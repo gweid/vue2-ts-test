@@ -5,6 +5,13 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+export const $rest = {
+  getUser() {
+    return 'user name'
+  }
+}
+Vue.prototype.$rest = $rest
+
 new Vue({
   router,
   store,

@@ -970,3 +970,71 @@ console.log(this.xxxxx)
 this.yyyyyy()
 ```
 
+
+
+## 4、增强类型声明
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+比如，我们在 main.ts 中，为 vue 的原型上挂载了一些方法：
+
+```js
+export const $rest = {
+  getUser() {
+    return 'user name'
+  }
+}
+Vue.prototype.$rest = $rest
+```
+
+这样子在使用的时候，直接 `this.$rest` 是会报错的，因为 vue 身上并没有 $rest 的类型声明，那么就需要我们告诉 ts，这个是什么类型。解决方法，在 `shims-vue.d.ts` 同一级目录下面，新建 `vue.d.ts`
+
+> vue.d.ts
+
+```js
+import Vue from 'vue';
+import { $rest } from './main'
+
+declare module 'vue/types/vue' {
+  // Vue 的全局属性
+  interface Vue {
+    $rest: typeof $rest
+  }
+}
+```
+
+这样子，就相当于告诉 ts，$rest 的类型就是 main.ts 文件里面声明的 $rest。
+
+这种用法也可以在引用第三方库的时候，比如 axios 通过 this.$axios 调用
+
+【注意：如果没有生效，重启一下 vscode】

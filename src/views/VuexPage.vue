@@ -21,6 +21,7 @@ export default class  extends Vue {
 
   created() {
     console.log(this.getUserInfo);
+    console.log(this.$rest.getUser());
   }
 
   changeUserInfo() {
